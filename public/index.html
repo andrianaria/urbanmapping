@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#163f38">
+  <title>UrbanMapping · Kota Reka</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#" aria-label="UrbanMapping home"><span class="brand-mark">u<span>m</span></span><span>UrbanMapping<small>LOCATION INTELLIGENCE</small></span></a>
+    <div class="workspace-label">WORKSPACE</div>
+    <div class="city-switch"><span class="city-symbol">▦</span><span>Kota Reka<small>Synthetic city dataset</small></span><span class="city-dot"></span></div>
+    <nav aria-label="Main navigation">
+      <button class="nav-item active" data-view="city"><span aria-hidden="true">◈</span>City explorer</button>
+      <button class="nav-item" data-view="market"><span aria-hidden="true">▤</span>Market data</button>
+      <button class="nav-item" data-view="sites"><span aria-hidden="true">⌖</span>Candidate sites</button>
+      <button class="nav-item" data-view="scenarios"><span aria-hidden="true">⇄</span>Scenarios</button>
+      <button class="nav-item" data-view="quality"><span aria-hidden="true">✓</span>Data quality</button>
+    </nav>
+    <div class="sidebar-bottom"><span class="offline-dot"></span>Offline workspace<small>Local analytical workbase · Version 0.1</small></div>
+  </aside>
+  <main>
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> Kota Reka</div><span class="synthetic-label">SYNTHETIC DATA</span></header>
+    <div id="status" class="status hidden" role="status" aria-live="polite"></div>
+    <section class="page-heading"><div><div class="eyebrow">KOTA REKA · INDONESIA-INSPIRED MODEL</div><h1 id="page-title">Kota Reka city explorer</h1><p id="page-description">Explore the population, spending and competitive context of a fictional urban market.</p></div><label class="category-control">Business category<select id="category"></select></label></section>
+    <div class="kpi-grid" id="city-kpis"></div>
+
+    <section class="view active" id="view-city" aria-label="City explorer">
+      <div class="explorer-layout">
+        <article class="panel map-panel">
+          <div class="panel-title"><div><h2>City opportunity map</h2><p>Local coordinates in kilometres</p></div><div class="segmented" id="map-layers"><button data-layer="density" class="selected">Population</button><button data-layer="purchasing">Purchasing power</button><button data-layer="spending">Spending</button></div></div>
+          <div class="map-toolbar"><label><input type="checkbox" id="show-competitors" checked> Competitors</label><label><input type="checkbox" id="show-candidates" checked> Candidates</label><label><input type="checkbox" id="show-roads"> Roads</label><label><input type="checkbox" id="show-districts" checked> Districts</label></div>
+          <div class="map-wrap"><svg id="city-map" viewBox="0 0 1000 800" role="img" aria-label="Interactive offline map of synthetic Kota Reka"></svg><div class="map-zoom"><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="map-reset" aria-label="Reset map">⌂</button></div><div class="map-north" aria-hidden="true">N<span>↑</span></div><div id="map-tooltip" class="map-tooltip hidden"></div></div>
+          <div class="map-bottom"><div class="legend"><span id="legend-title">People / km²</span><span id="legend-swatches"></span><span id="legend-range"></span></div><span class="map-hint">Click a zone · drag to pan · scroll to zoom</span></div>
+        </article>
+        <aside class="context-panel">
+          <article class="panel zone-panel"><div class="panel-title"><div><div class="eyebrow">ZONE DETAIL</div><h2 id="zone-name">Select a neighborhood</h2></div><span class="zone-code" id="zone-code">—</span></div><div id="zone-detail"><p class="empty-text">Choose a polygon on the map to inspect the local market.</p></div></article>
+          <article class="insight-card"><div class="eyebrow">BASELINE ANALYSIS</div><h2 id="top-site">Calculating…</h2><p id="top-site-note"></p><button id="explore-sites">Review candidate rankings <span>→</span></button></article>
+          <div class="method-note"><strong>Illustrative market potential</strong><p>Spending is a synthetic estimate of resident demand. It is separate from a business revenue forecast.</p><button class="text-button" id="open-method">See the scoring method ↗</button></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-market" aria-label="Market data">
+      <article class="panel"><div class="panel-title"><div><h2>Neighborhood indicators</h2><p>80 zones · all records generated locally</p></div><div class="table-controls"><label>District<select id="district-filter"><option value="all">All districts</option></select></label><label>Find a zone<input id="zone-search" type="search" placeholder="Zone name or code"></label></div></div>
+        <div class="table-scroll"><table><thead><tr><th>Zone</th><th>District</th><th>Population</th><th>People / km²</th><th>Spend / person / month</th><th>Category spend / month</th><th>Competitors</th><th>Coverage</th></tr></thead><tbody id="market-rows"></tbody></table></div><div class="table-foot" id="market-count"></div>
+      </article>
+      <div class="formula-grid"><article class="panel prose"><h3>Population density</h3><code>population ÷ polygon area (km²)</code><p>Polygon areas are derived in the local Cartesian kilometre system.</p></article><article class="panel prose"><h3>Category spending potential</h3><code>population × monthly spend per capita × category share</code><p>Category share is an explicit synthetic assumption. Missing spending stays missing.</p></article></div>
+    </section>
+
+    <section class="view" id="view-sites" aria-label="Candidate site workbench">
+      <div class="workbench-grid">
+        <div class="workbench-main">
+          <article class="panel"><div class="panel-title"><div><h2>Candidate rankings</h2><p id="ranking-summary"></p></div><span class="subtle-pill">Baseline model</span></div><div class="table-scroll"><table><thead><tr><th>Compare</th><th>Candidate</th><th>Score / 100</th><th>Population</th><th>Category spend / month</th><th>Rivals</th><th>Coverage</th></tr></thead><tbody id="candidate-rows"></tbody></table></div></article>
+          <article class="panel" id="candidate-detail"></article>
+          <article class="panel"><div class="panel-title"><div><h2>Side-by-side comparison</h2><p>Select up to three candidates in the ranking.</p></div></div><div class="comparison-grid" id="candidate-comparison"></div></article>
+        </div>
+        <aside class="panel assumptions-panel"><div class="panel-title"><div><h2>Analysis assumptions</h2><p>Transparent, editable inputs</p></div></div>
+          <form id="assumptions-form"><label>Neighborhood radius <span>km</span><input name="radiusKm" type="number" min="0.4" max="4" step="0.1" required></label><fieldset><legend>Score weights</legend><label>Population<input name="population" type="number" min="0" max="100" required></label><label>Category spending<input name="spending" type="number" min="0" max="100" required></label><label>Competitive space<input name="competition" type="number" min="0" max="100" required></label><label>Site cost<input name="cost" type="number" min="0" max="100" required></label></fieldset><p class="field-help">Weights are normalized to sum to 100%. At least one must be positive.</p><button class="primary" type="submit">Recalculate rankings</button><button class="secondary" id="reset-assumptions" type="button">Restore reference assumptions</button></form>
+          <div class="assumption-method"><h3>How the score works</h3><p>Each component is scaled to 0–100 across the current twelve sites. More population and spending score higher. Fewer rivals and lower first-year site costs score higher.</p><p><strong>First-year site cost</strong><br>Investment + 12 × monthly rent.</p><p><strong>Equal inputs</strong> receive a neutral score of 50. Scores are relative to this candidate set.</p><p>The radius includes whole zones whose centroids fall inside a straight-line circle. Roads do not influence this version.</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-scenarios" aria-label="Scenario comparison">
+      <div class="scenario-intro"><article class="panel prose"><div class="eyebrow">SAVE A REPRODUCIBLE SNAPSHOT</div><h2>One market. Different assumptions.</h2><p>Save the current category, radius, cost overrides and weights together with the exact candidate results. Compare a saved scenario against the reference baseline.</p><form id="save-scenario-form" class="inline-form"><label>Scenario name<input id="scenario-name" maxlength="70" required placeholder="e.g. Smaller food neighborhood"></label><button class="primary" type="submit">Save current analysis</button></form><p class="field-help" id="current-assumptions"></p></article><article class="panel prose"><h3>What this comparison measures</h3><p>Changes in relative suitability and addressable category spending. This first model supports deterministic assumptions and complete snapshots.</p><p>Travel-time demand, sales capture, profitability and uncertainty simulation are planned development.</p></article></div>
+      <article class="panel"><div class="panel-title"><div><h2>Compare saved scenarios</h2><p>Dataset and model versions are checked before comparison.</p></div><form id="compare-scenarios-form" class="scenario-selects"><label>Reference<select id="scenario-a"></select></label><label>Compare with<select id="scenario-b"></select></label><button class="secondary" type="submit">Compare</button></form></div><div id="scenario-comparison" class="scenario-comparison"><p class="empty-text">Save another scenario to compare it with the reference baseline.</p></div></article>
+      <article class="panel"><div class="panel-title"><h2>Saved snapshots</h2></div><div id="saved-scenarios" class="saved-list"></div></article>
+    </section>
+
+    <section class="view" id="view-quality" aria-label="Data quality">
+      <div class="quality-kpis" id="quality-kpis"></div>
+      <article class="panel"><div class="panel-title"><div><h2>Validation findings</h2><p>Missing measurements are visible and excluded from spending sums.</p></div><button class="secondary" id="refresh-quality">Run validation</button></div><div class="table-scroll"><table><thead><tr><th>Severity</th><th>Record</th><th>Field</th><th>Finding</th></tr></thead><tbody id="quality-rows"></tbody></table></div></article>
+      <div class="quality-bottom"><article class="panel prose" id="sources"></article><article class="panel"><div class="panel-title"><h2>Local audit events</h2></div><div id="audit-events"></div></article></div>
+    </section>
+    <footer class="workspace-footer">Kota Reka is fictional. Every geographic, demographic and spending indicator is synthetic.<span id="version-label"></span></footer>
+  </main>
+</body>
+</html>
